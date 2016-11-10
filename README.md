@@ -1,5 +1,5 @@
 ## Getting Started
-1. Ensure you've got python and python-pip installed
+1. Ensure you've got python (2.7) and python-pip installed
 2. Install virtualenv 
   - `pip install virtualenv`
 3. Create a virtualenv
