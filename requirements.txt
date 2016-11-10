@@ -1,0 +1,2 @@
+pymining==0.2
+virtualenv==15.0.3
