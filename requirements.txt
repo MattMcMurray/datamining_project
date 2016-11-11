@@ -1,3 +1,5 @@
+py==1.4.31
 pymining==0.2
-virtualenv==15.0.3
+pytest==3.0.3
 requests==2.11.1
+virtualenv==15.0.3
