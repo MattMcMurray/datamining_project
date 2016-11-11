@@ -15,3 +15,4 @@ class Movie(Base):
     link_url = Column(String)
     link_type = Column(String)
     box_office_earnings = Column(String)
+    full_review = Column(String)

@@ -6,7 +6,8 @@ from core.database.models.movie import Base, Movie
 class DatabaseServices(object):
     """ Methods to ease interfacing with ORM """
 
-    def __init__(self):
+    def __init__(self, db_file_name):
+        self.filename = db_file_name
         self.engine = None
         self.session = None
 
@@ -17,7 +18,9 @@ class DatabaseServices(object):
         """
 
         if debug:
-            self.engine = create_engine('sqlite:///test.db', echo=True)
+            self.engine = create_engine(
+                'sqlite:///{0}.db'.format(self.filename)
+                , echo=True)
         else:
             raise ValueError('Prod db not yet implemented; run with debug=True')
 

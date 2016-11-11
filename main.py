@@ -2,8 +2,12 @@ import json
 import os
 import errno
 import time
+from pprint import pprint
 
+from settings import DATABASE_NAME
 from core.web_scraping import movie_api_services as api
+from core.database.db_services import DatabaseServices
+from core.database.models.movie import Movie
 
 def create_output_dir(dirname):
     """ Creates an output directory within the module.
@@ -43,5 +47,24 @@ def store_reviews(offset=0):
         offset += 20
         data = api.get_all_reviews(offset=offset)
 
+def parse_json_into_db():
+    ''' Takes the data stored by store_reviews() and populates the DB '''
+
+    database = DatabaseServices(DATABASE_NAME)
+
+    filepath = os.path.join('json_output', 'movie_response_0.json')
+    with open(filepath, 'r') as infile:
+        data = json.load(infile)
+
+    for item in data['results']:
+        database.add_movie_review(
+            byline=item['byline'],
+            display_title=item['display_title'],
+            critics_pick=item['critics_pick'],
+            mpaa_rating=item['mpaa_rating'],
+            link_url=item['link']['url'],
+            link_type=item['link']['type']
+            )
+
 if __name__ == '__main__':
-    store_reviews()
+    parse_json_into_db()
