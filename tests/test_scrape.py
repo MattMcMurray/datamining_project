@@ -5,12 +5,12 @@ import shutil
 import time
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 
-import start_scrape as sc
+import main
 
 def test_create_dir():
     dirname = 'new_test_dir'
 
-    sc.create_output_dir(dirname)
+    main.create_output_dir(dirname)
 
     dir_rel_path = os.path.join('..', dirname)
     dir_abs_path = os.path.join(
