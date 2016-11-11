@@ -24,8 +24,8 @@
 3. Activate the python interactive shell by running the `python` command
 4. Run the following commands:
 ```
-import start_scrape as sc
-sc.store_reviews()
+import main
+main.store_reviews()
 
 ## Optionally, `store_reviews()` can take an offset. 
 ## Offset must be a multiple of 20 or exception will be thrown
