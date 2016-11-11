@@ -3,3 +3,5 @@ venv/
 *.json
 *.swp
 .cache/
+
+test.db
