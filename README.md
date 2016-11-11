@@ -8,6 +8,25 @@
   - e.g. `virtualenv venv`
 4. Activate the virtualenv
   - on linux: `source venv/bin/activate`
-5. Install `pymining` in the virtualenv
-  - `pip install pymining`
-6. You can now run the examples in the `python_examples` directory
+5. Install requirements
+  - `pip install -r requirements.txt`
+
+## Running Tests
+1. Ensure you've activated your virtualenv (see [Getting Started](#Getting-Started))
+2. Ensure `pytest` is installed in virtualenv by running `pytest --version`
+3. Run `pytest tests/`
+
+## To Fetch Data from NYTimes API
+*Note: The output has already been stored in the repo. But here's the instructions in case you want to run it again.*
+
+1. `cd` into main project directory
+2. Ensure you've activated your virtualenv (see [Getting Started](#Getting-Started))
+3. Activate the python interactive shell by running the `python` command
+4. Run the following commands:
+```
+import start_scrape as sc
+sc.store_reviews()
+
+## Optionally, `store_reviews()` can take an offset. 
+## Offset must be a multiple of 20 or exception will be thrown
+```
