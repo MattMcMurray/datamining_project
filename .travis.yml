@@ -4,3 +4,4 @@ python:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 ## need to add test script
+script: pytest
