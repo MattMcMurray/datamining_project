@@ -17,7 +17,7 @@ def get_all_reviews(offset=0):
     params = '?api-key={api_key}'
 
     if offset > 0:
-        params += ''
+        params += '&offset={0}'.format()
 
     response = requests.get(
         base_url.format(resource_type='all') +

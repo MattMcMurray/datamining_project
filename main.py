@@ -4,7 +4,7 @@ import errno
 import time
 from pprint import pprint
 
-from settings import DATABASE_NAME
+from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
 from core.database.db_services import DatabaseServices
 from core.database.models.movie import Movie
@@ -28,7 +28,7 @@ def store_reviews(offset=0):
     JSON files that have the offset appended to the filename.
     """
 
-    json_output_file = 'movie_response_{suffix}.json'
+    json_output_file = JSON_FILENAME_PREFIX + '{suffix}.json'
     output_dir = 'json_output'
 
     create_output_dir(output_dir)
@@ -52,19 +52,24 @@ def parse_json_into_db():
 
     database = DatabaseServices(DATABASE_NAME)
 
-    filepath = os.path.join('json_output', 'movie_response_0.json')
-    with open(filepath, 'r') as infile:
-        data = json.load(infile)
+    for filename in os.listdir(JSON_OUTPUT_DIRNAME):
+        if filename.startswith(JSON_FILENAME_PREFIX):
 
-    for item in data['results']:
-        database.add_movie_review(
-            byline=item['byline'],
-            display_title=item['display_title'],
-            critics_pick=item['critics_pick'],
-            mpaa_rating=item['mpaa_rating'],
-            link_url=item['link']['url'],
-            link_type=item['link']['type']
-            )
+            filepath = os.path.join(JSON_OUTPUT_DIRNAME, filename)
+
+            print filepath
+            with open(filepath, 'r') as infile:
+                data = json.load(infile)
+
+                for item in data['results']:
+                    database.add_movie_review(
+                        byline=item['byline'],
+                        display_title=item['display_title'],
+                        critics_pick=item['critics_pick'],
+                        mpaa_rating=item['mpaa_rating'],
+                        link_url=item['link']['url'],
+                        link_type=item['link']['type']
+                        )
 
 if __name__ == '__main__':
     parse_json_into_db()
