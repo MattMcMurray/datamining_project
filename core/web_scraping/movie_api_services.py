@@ -17,11 +17,12 @@ def get_all_reviews(offset=0):
     params = '?api-key={api_key}'
 
     if offset > 0:
-        params += '&offset={0}'.format()
+        params += '&offset={offset}'
 
     response = requests.get(
         base_url.format(resource_type='all') +
-        params.format(api_key=NY_TIMES_API_KEY)
+        params.format(api_key=NY_TIMES_API_KEY,
+                      offset=offset)
         )
 
     return response.json()
