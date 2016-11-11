@@ -1,4 +1,0 @@
-## TODO: write some tests
-
-def test_sample():
-    assert 1==1
