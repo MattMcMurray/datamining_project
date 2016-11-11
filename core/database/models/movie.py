@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String
 Base = declarative_base()
 
 class Movie(Base):
+    """ The ORM model for the movie table """
     __tablename__ = 'movies'
 
     movie_id = Column(Integer, primary_key=True)
@@ -13,3 +14,4 @@ class Movie(Base):
     mpaa_rating = Column(String)
     link_url = Column(String)
     link_type = Column(String)
+    box_office_earnings = Column(String)

@@ -3,59 +3,63 @@ from sqlalchemy.orm import sessionmaker
 
 from core.database.models.movie import Base, Movie
 
-ENGINE = None
-MY_SESSION = None
+class DatabaseServices(object):
+    """ Methods to ease interfacing with ORM """
 
-def init_engine(debug=False):
-    """ Create the database engine.
+    def __init__(self):
+        self.engine = None
+        self.session = None
 
-    If in debug mode, use a sqlite db as a pseudo-stub
-    """
-    global ENGINE
+    def init_engine(self, debug=False):
+        """ Create the database engine.
 
-    if debug:
-        ENGINE = create_engine('sqlite:///test.db', echo=True)
-    else:
-        raise ValueError('Prod db not yet implemented; run with debug=True')
+        If in debug mode, use a sqlite db as a pseudo-stub
+        """
 
-    Base.metadata.create_all(ENGINE)
+        if debug:
+            self.engine = create_engine('sqlite:///test.db', echo=True)
+        else:
+            raise ValueError('Prod db not yet implemented; run with debug=True')
 
-def get_session():
-    """ Get a session for the database """
-    global MY_SESSION, ENGINE
+        Base.metadata.create_all(self.engine)
 
-    if ENGINE is None:
-        init_engine(debug=True)
+    def get_session(self):
+        """ Get a session for the database """
 
-    session = sessionmaker(bind=ENGINE)
+        if self.engine is None:
+            self.init_engine(debug=True)
 
-    MY_SESSION = session()
+        session = sessionmaker(bind=self.engine)
 
-def add_movie_review(byline, display_title, critics_pick, mpaa_rating,
-                     link_url, link_type):
-    """ Adds a movie review object to the db session and commits.
-    If session doesn't exist, it will be created
-    """
-    global MY_SESSION
+        self.session = session()
 
-    if MY_SESSION is None:
-        get_session()
+    def add_movie_review(self, byline, display_title, critics_pick, mpaa_rating,
+                         link_url, link_type):
+        """ Adds a movie review object to the db session and commits.
+        If session doesn't exist, it will be created
+        """
 
-    new_movie = Movie(
-        byline=byline,
-        display_title=display_title,
-        critics_pick=critics_pick,
-        mpaa_rating=mpaa_rating,
-        link_url=link_url,
-        link_type=link_type)
+        if self.session is None:
+            self.get_session()
 
-    MY_SESSION.add(new_movie)
-    MY_SESSION.commit()
+        new_movie = Movie(
+            byline=byline,
+            display_title=display_title,
+            critics_pick=critics_pick,
+            mpaa_rating=mpaa_rating,
+            link_url=link_url,
+            link_type=link_type)
 
-def get_review_by_title(movie_title):
-    global MY_SESSION
+        self.session.add(new_movie)
+        self.session.commit()
 
-    if MY_SESSION is None:
-        get_session()
+    def get_review_by_title(self, movie_title):
+        """ Gets a movie review by the title of the movie
 
-    return MY_SESSION.query(Movie).filter_by(display_title=movie_title).first()
+        Returns the first item in the DB matching that title
+        """
+
+        if self.session is None:
+            self.get_session()
+
+        return self.session.query(Movie).filter_by(display_title=movie_title).first()
