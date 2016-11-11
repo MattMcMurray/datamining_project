@@ -6,6 +6,7 @@ from core.database import test
 from settings import NY_TIMES_API_KEY
 
 def get_all_reviews():
+    assert(NY_TIMES_API_KEY != '')
     base_url = 'https://api.nytimes.com/svc/movies/v2/reviews/{resource_type}.json'
     params = '?api-key={api_key}'
     
