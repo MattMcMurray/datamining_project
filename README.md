@@ -1,3 +1,5 @@
+# DATAMINING PROJECT [![Build Status](https://travis-ci.org/MattMcMurray/datamining_project.svg?branch=develop)](https://travis-ci.org/MattMcMurray/datamining_project)
+
 ## Getting Started
 1. Ensure you've got python (2.7) and python-pip installed
 2. Install virtualenv 
