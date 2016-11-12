@@ -36,7 +36,7 @@ def store_reviews(offset=0):
     data = api.get_all_reviews() # get initial dataset with no offset
 
     while data['num_results'] != '0'and data['status'] == 'OK'and data['has_more']:
-        time.sleep(0.2) # Do not exceed NYTimes 5 requests/sec limit
+        time.sleep(0.5) # Do not exceed NYTimes 5 requests/sec limit
         output_filename = json_output_file.format(suffix=offset)
         output_path = os.path.join(output_dir, output_filename)
 
