@@ -12,7 +12,7 @@ def test_engine_init():
 
     DATABASE = DatabaseServices(TEST_DATABASE_NAME)
 
-    DATABASE.init_engine(debug=True)
+    DATABASE.init_engine()
 
     assert DATABASE.engine is not None
 

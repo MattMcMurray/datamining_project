@@ -2,12 +2,10 @@ import json
 import os
 import errno
 import time
-from pprint import pprint
 
 from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
 from core.database.db_services import DatabaseServices
-from core.database.models.movie import Movie
 
 def create_output_dir(dirname):
     """ Creates an output directory within the module.
@@ -65,6 +63,7 @@ def parse_json_into_db():
                     database.add_movie_review(
                         byline=item['byline'],
                         display_title=item['display_title'],
+                        release_date=item['opening_date'],
                         critics_pick=item['critics_pick'],
                         mpaa_rating=item['mpaa_rating'],
                         link_url=item['link']['url'],
