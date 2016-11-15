@@ -10,6 +10,7 @@ class Movie(Base):
     movie_id = Column(Integer, primary_key=True)
     byline = Column(String)
     display_title = Column(String, unique=True)
+    release_date = Column(String)
     critics_pick = Column(String)
     mpaa_rating = Column(String)
     link_url = Column(String)
