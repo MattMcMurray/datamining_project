@@ -5,6 +5,7 @@ import time
 
 from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
+from core.web_scraping import article_scraper
 from core.database.db_services import DatabaseServices
 
 def create_output_dir(dirname):
@@ -70,8 +71,25 @@ def parse_json_into_db():
                         link_type=item['link']['type']
                         )
 
-def fetch_full_articles():
+def fetch_full_articles(start_from=0):
+    ''' Use web scraping to fetch full article text and add it to the db 
+
+    @start_from: Optionally don't start from the beginning. This is good if the process was
+    interrupted while running and you want to pick up from where it left off instead of restarting.
+
+    '''
     database = DatabaseServices(DATABASE_NAME)
 
+    num_movies = database.get_num_movies()
+
+    for i in range(1, 10): ## TODO: change to num_movies
+        try:
+            curr_movie = database.get_review_by_id(i)
+            full_review = article_scraper.scrape_article(curr_movie.link_url)
+            database.add_review_full_text(curr_movie.movie_id, full_review)
+        except Exception as exc:
+            print 'SOMETHING WENT WRONG:'
+            print exc
+
 if __name__ == '__main__':
-    parse_json_into_db()
+    fetch_full_articles()

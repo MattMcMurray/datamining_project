@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import func
+from sqlalchemy import func, update
 
 from core.database.models.movie import Base, Movie
 
@@ -73,9 +73,29 @@ class DatabaseServices(object):
 
         return self.session.query(Movie).filter_by(display_title=movie_title).first()
 
+    def get_review_by_id(self, movie_id):
+        """ Gets a movie review by the title of the movie
+
+        Returns the first item in the DB matching that title
+        """
+
+        if self.session is None:
+            self.get_session()
+
+        return self.session.query(Movie).filter_by(movie_id=movie_id).first()
+
     def get_num_movies(self):
         """ Fetches the number of movie reviews stored in DB """
         if self.session is None:
             self.get_session()
 
         return self.session.query(func.count(Movie.movie_id)).scalar()
+
+    def add_review_full_text(self, movie_id, full_text):
+        ''' Updates the DB entry with the full review text '''
+        if self.session is None:
+            self.get_session()
+
+        movie = self.get_review_by_id(movie_id)
+        movie.full_review = full_text
+        self.session.commit()
