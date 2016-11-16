@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 
 from core.database.models.movie import Base, Movie
 
@@ -71,3 +72,10 @@ class DatabaseServices(object):
             self.get_session()
 
         return self.session.query(Movie).filter_by(display_title=movie_title).first()
+
+    def get_num_movies(self):
+        """ Fetches the number of movie reviews stored in DB """
+        if self.session is None:
+            self.get_session()
+
+        return self.session.query(func.count(Movie.movie_id)).scalar()

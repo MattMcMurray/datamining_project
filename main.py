@@ -70,5 +70,8 @@ def parse_json_into_db():
                         link_type=item['link']['type']
                         )
 
+def fetch_full_articles():
+    database = DatabaseServices(DATABASE_NAME)
+
 if __name__ == '__main__':
     parse_json_into_db()
