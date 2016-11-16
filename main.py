@@ -82,7 +82,7 @@ def fetch_full_articles(start_from=0):
 
     num_movies = database.get_num_movies()
 
-    for i in range(1, 10): ## TODO: change to num_movies
+    for i in range(1, num_movies): ## TODO: change to num_movies
         try:
             curr_movie = database.get_review_by_id(i)
             full_review = article_scraper.scrape_article(curr_movie.link_url)
