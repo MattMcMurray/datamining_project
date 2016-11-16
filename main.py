@@ -71,8 +71,8 @@ def parse_json_into_db():
                         link_type=item['link']['type']
                         )
 
-def fetch_full_articles(start_from=0):
-    ''' Use web scraping to fetch full article text and add it to the db 
+def fetch_full_articles(start_from=1):
+    ''' Use web scraping to fetch full article text and add it to the db
 
     @start_from: Optionally don't start from the beginning. This is good if the process was
     interrupted while running and you want to pick up from where it left off instead of restarting.
@@ -82,7 +82,7 @@ def fetch_full_articles(start_from=0):
 
     num_movies = database.get_num_movies()
 
-    for i in range(1, num_movies): ## TODO: change to num_movies
+    for i in range(start_from, num_movies):
         try:
             curr_movie = database.get_review_by_id(i)
             full_review = article_scraper.scrape_article(curr_movie.link_url)
