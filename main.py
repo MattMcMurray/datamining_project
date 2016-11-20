@@ -161,7 +161,7 @@ def start_box_office_crawl():
             print 'An uknown error occured; moving on'
 
         if sani_gross is not None:
-            print 'Potential gross: ' + sani_gross.group(0)
+            print 'Potential gross: ' + parse_box_office_gross_str(sani_gross.group(0))
             ## TODO: parse str and add to DB
 
         print '\n'
@@ -180,27 +180,29 @@ def parse_box_office_gross_str(gross_str):
     ## Second, convert the words 'million' and 'billion' to zeroes
     ## We need to count how many numbers there are after the decimal point and only add the
     ## appropriate amount of zeroes
+    num_decimal_pts = 0
     if '.' in gross_str:
-        num_decimal_pts = 0
         index = gross_str.find('.')
 
-        index += 1 ## move past the decimal point
-
-        while not gross_str[index].isdigit():
+        while gross_str[index+1].isdigit():
             index += 1
             num_decimal_pts += 1
 
-        gross_str = gross_str.replace('.', '')
-        gross_str = gross_str.replace(' ', '')
+    gross_str = gross_str.replace('.', '')
+    gross_str = gross_str.replace(' ', '')
+    gross_str = gross_str.replace(',', '')
 
-        if ('million' in gross_str) or ('millions' in gross_str):
-            zeroes = generate_zeroes(num_decimal_pts, million=True, billion=False)
-        elif ('billion' in gross_str) or ('billions' in gross_str):
-            zeroes = generate_zeroes(num_decimal_pts, million=False, billion=True)
+    zeroes = ''
+    if ('million' in gross_str) or ('millions' in gross_str):
+        zeroes = generate_zeroes(num_decimal_pts, million=True, billion=False)
+    elif ('billion' in gross_str) or ('billions' in gross_str):
+        zeroes = generate_zeroes(num_decimal_pts, million=False, billion=True)
 
-        print 'Num zeroes: {0}'.format(zeroes)
-        gross_str = gross_str.replace('million', zeroes)
-        gross_str = gross_str.replace('millions', zeroes)
+    gross_str = gross_str.replace('million', zeroes)
+    gross_str = gross_str.replace('millions', zeroes)
+    gross_str = gross_str.replace('billion', zeroes)
+    gross_str = gross_str.replace('billions', zeroes)
+
 
     return gross_str
 
