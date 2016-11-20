@@ -109,10 +109,6 @@ def start_box_office_crawl():
             parses grosses that look like:
             - $2,400,000 (anything else following)
     '''
-    import logging
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
-
     regex1 = re.compile(r'^\$?(\d*(\.\d)?)( million| billion)')
     regex2 = re.compile(r'^\$?(\d*\,\d*)*')
 
@@ -150,7 +146,6 @@ def start_box_office_crawl():
             elif ',' in box_office_gross:
                 sani_gross = regex2.match(box_office_gross)
 
-
         except AttributeError as exc:
             print 'No box office gross in article'
             print exc
@@ -167,8 +162,63 @@ def start_box_office_crawl():
 
         if sani_gross is not None:
             print 'Potential gross: ' + sani_gross.group(0)
+            ## TODO: parse str and add to DB
 
         print '\n'
+
+def parse_box_office_gross_str(gross_str):
+    ''' Preps a string pulled from wikipedia to be stored in the database
+
+    @str: the string to be 'santitized
+
+    @return: an integer representing gross in dollars
+    '''
+
+    ## First, remove the '$' at the beginning of the str
+    gross_str = gross_str[1:]
+
+    ## Second, convert the words 'million' and 'billion' to zeroes
+    ## We need to count how many numbers there are after the decimal point and only add the
+    ## appropriate amount of zeroes
+    if '.' in gross_str:
+        num_decimal_pts = 0
+        index = gross_str.find('.')
+
+        index += 1 ## move past the decimal point
+
+        while not gross_str[index].isdigit():
+            index += 1
+            num_decimal_pts += 1
+
+        gross_str = gross_str.replace('.', '')
+        gross_str = gross_str.replace(' ', '')
+
+        if ('million' in gross_str) or ('millions' in gross_str):
+            zeroes = generate_zeroes(num_decimal_pts, million=True, billion=False)
+        elif ('billion' in gross_str) or ('billions' in gross_str):
+            zeroes = generate_zeroes(num_decimal_pts, million=False, billion=True)
+
+        print 'Num zeroes: {0}'.format(zeroes)
+        gross_str = gross_str.replace('million', zeroes)
+        gross_str = gross_str.replace('millions', zeroes)
+
+    return gross_str
+
+def generate_zeroes(offset, million=False, billion=False):
+    num_zeroes_million = 6
+    num_zeroes_billion = 9
+    num_zeroes = None
+
+    if million:
+        num_zeroes = num_zeroes_million - offset
+    elif billion:
+        num_zeroes = num_zeroes_billion - offset
+
+    zero_str = ''
+    for i in range(0, num_zeroes):
+        zero_str += '0'
+
+    return zero_str
 
 if __name__ == '__main__':
     print start_box_office_crawl()
