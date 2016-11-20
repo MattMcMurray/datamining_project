@@ -20,7 +20,7 @@ class DatabaseServices(object):
         # appended, etc..
         self.engine = create_engine(
             'sqlite:///{0}.db'.format(self.filename)
-            , echo=True)
+            , echo=False)
 
         Base.metadata.create_all(self.engine)
 

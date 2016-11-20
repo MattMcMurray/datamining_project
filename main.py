@@ -2,6 +2,7 @@ import json
 import os
 import errno
 import time
+import re
 
 from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
@@ -93,14 +94,81 @@ def fetch_full_articles(start_from=1):
             print exc
 
 def start_box_office_crawl():
-    ''' Fetch movies from the DB, then crawl the web for their box office gross '''
+    ''' Fetch movies from the DB, then crawl the web for their box office gross
 
-    search_result = box_office.search_wiki('star wars a new hope film')
-    article_title = search_result['query']['search'][0]['title'].replace(' ', '_')
+        There are two regexes that parse the box office gross from wikipedia
 
-    article = box_office.scrape_wiki(article_title)
+        r'^\$?(\d*(\.\d)?)( million| billion)'
 
-    return article.find('th', text='Box office').next_sibling.next_sibling.get_text()
+            parses grosses that look like:
+            - $14.5 million
+            - $32 billion
+
+        r'^\$?(\d*\,\d*)*'
+
+            parses grosses that look like:
+            - $2,400,000 (anything else following)
+    '''
+    import logging
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+
+    regex1 = re.compile(r'^\$?(\d*(\.\d)?)( million| billion)')
+    regex2 = re.compile(r'^\$?(\d*\,\d*)*')
+
+
+    database = DatabaseServices(DATABASE_NAME)
+    num_movies = database.get_num_movies()
+
+    for i in range(1, num_movies):
+        sani_gross = None
+
+        try:
+            release_year = ""
+            searchstr = "{title} {year} film"
+            curr_movie = database.get_review_by_id(i)
+
+            if curr_movie.release_date is not None:
+                release_year = curr_movie.release_date[:4]
+
+            searchstr = searchstr.format(
+                title=curr_movie.display_title,
+                year=release_year
+                )
+
+            print 'Searching for "' + searchstr + '"'
+            search_result = box_office.search_wiki(searchstr)
+            article_title = search_result['query']['search'][0]['title'].replace(' ', '_')
+
+            article = box_office.scrape_wiki(article_title)
+
+            box_office_gross = article.find(
+                'th', text='Box office').next_sibling.next_sibling.get_text()
+
+            if '.' in box_office_gross:
+                sani_gross = regex1.match(box_office_gross)
+            elif ',' in box_office_gross:
+                sani_gross = regex2.match(box_office_gross)
+
+
+        except AttributeError as exc:
+            print 'No box office gross in article'
+            print exc
+
+        except IndexError as exc:
+            print 'Search for movie failed'
+            print exc
+
+        except UnicodeEncodeError as exc:
+            print 'Unicode error; moving on'
+
+        except:
+            print 'An uknown error occured; moving on'
+
+        if sani_gross is not None:
+            print 'Potential gross: ' + sani_gross.group(0)
+
+        print '\n'
 
 if __name__ == '__main__':
     print start_box_office_crawl()

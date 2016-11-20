@@ -3,13 +3,13 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 
 
-def search_wiki(movie_title):
+def search_wiki(search_query):
     base_url = 'https://en.wikipedia.org/w/api.php'
     query_params = {
         'action': 'query',
         'format': 'json',
         'list': 'search',
-        'srsearch': movie_title,
+        'srsearch': search_query,
     }
 
     response = requests.get(base_url, params=query_params)
