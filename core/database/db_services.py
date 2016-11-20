@@ -20,7 +20,7 @@ class DatabaseServices(object):
         # appended, etc..
         self.engine = create_engine(
             'sqlite:///{0}.db'.format(self.filename)
-            , echo=True)
+            , echo=False)
 
         Base.metadata.create_all(self.engine)
 
@@ -98,4 +98,13 @@ class DatabaseServices(object):
 
         movie = self.get_review_by_id(movie_id)
         movie.full_review = full_text
+        self.session.commit()
+
+    def add_box_office_gross(self, movie_id, box_office_gross):
+        ''' Adds the box office gross as a string to the DB '''
+        if self.session is None:
+            self.get_session()
+
+        movie = self.get_review_by_id(movie_id)
+        movie.box_office_earnings = box_office_gross
         self.session.commit()
