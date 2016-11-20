@@ -5,6 +5,7 @@ import time
 
 from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
+from core.web_scraping import box_office_scraper as box_office
 from core.web_scraping import article_scraper
 from core.database.db_services import DatabaseServices
 
@@ -91,5 +92,15 @@ def fetch_full_articles(start_from=1):
             print 'SOMETHING WENT WRONG:'
             print exc
 
+def start_box_office_crawl():
+    ''' Fetch movies from the DB, then crawl the web for their box office gross '''
+
+    search_result = box_office.search_wiki('star wars a new hope film')
+    article_title = search_result['query']['search'][0]['title'].replace(' ', '_')
+
+    article = box_office.scrape_wiki(article_title)
+
+    return article.find('th', text='Box office').next_sibling.next_sibling.get_text()
+
 if __name__ == '__main__':
-    fetch_full_articles()
+    print start_box_office_crawl()
