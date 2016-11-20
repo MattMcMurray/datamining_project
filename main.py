@@ -120,12 +120,12 @@ def start_box_office_crawl():
         sani_gross = None
 
         try:
-            release_year = ""
-            searchstr = "{title} {year} film"
+            release_year = ''
+            searchstr = '{title} {year}film'
             curr_movie = database.get_review_by_id(i)
 
             if curr_movie.release_date is not None:
-                release_year = curr_movie.release_date[:4]
+                release_year = curr_movie.release_date[:4] + ' '
 
             searchstr = searchstr.format(
                 title=curr_movie.display_title,
@@ -148,11 +148,9 @@ def start_box_office_crawl():
 
         except AttributeError as exc:
             print 'No box office gross in article'
-            print exc
 
         except IndexError as exc:
-            print 'Search for movie failed'
-            print exc
+            print 'Search for movie failed; this happens when the film is too old/obscure'
 
         except UnicodeEncodeError as exc:
             print 'Unicode error; moving on'
@@ -161,8 +159,15 @@ def start_box_office_crawl():
             print 'An uknown error occured; moving on'
 
         if sani_gross is not None:
-            print 'Potential gross: ' + parse_box_office_gross_str(sani_gross.group(0))
-            ## TODO: parse str and add to DB
+            try:
+                if len(sani_gross.group(0)):
+                    parsed_gross_str = parse_box_office_gross_str(sani_gross.group(0))
+                    database.add_box_office_gross(curr_movie.movie_id, parsed_gross_str)
+            except Exception as exc:
+                print 'An unknown error occured; moving on'
+                print exc
+        else:
+            'Sanitized gross is None'
 
         print '\n'
 
