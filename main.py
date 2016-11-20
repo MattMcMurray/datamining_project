@@ -97,7 +97,6 @@ def fetch_full_articles(start_from=1):
             print exc
 
 
-<<<<<<< db95d502ddf2a42f2412dadfde7e03ca22507e15
 def start_box_office_crawl():
     ''' Fetch movies from the DB, then crawl the web for their box office gross
 
