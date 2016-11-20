@@ -49,6 +49,7 @@ def store_reviews(offset=0):
         offset += 20
         data = api.get_all_reviews(offset=offset)
 
+
 def parse_json_into_db():
     ''' Takes the data stored by store_reviews() and populates the DB '''
 
@@ -74,6 +75,7 @@ def parse_json_into_db():
                         link_type=item['link']['type']
                         )
 
+
 def fetch_full_articles(start_from=1):
     ''' Use web scraping to fetch full article text and add it to the db
 
@@ -95,6 +97,7 @@ def fetch_full_articles(start_from=1):
             print exc
 
 
+<<<<<<< db95d502ddf2a42f2412dadfde7e03ca22507e15
 def start_box_office_crawl():
     ''' Fetch movies from the DB, then crawl the web for their box office gross
 
@@ -229,31 +232,38 @@ def generate_zeroes(offset, million=False, billion=False):
 
     return zero_str
 
-if __name__ == '__main__':
-    print start_box_office_crawl()
 
-def fetch_items_from_reviews(start_from=1):
-    ''' Use review_parser to pull out lists of words (including duplicates) used in reviews
-        for the purpose of mining FPs
-    '''
+def fetch_all_review_items():
     database = DatabaseServices(DATABASE_NAME)
     num_movies = database.get_num_movies()
 
     items = []
 
-    for i in range(start_from, 2):
-    	try:
-    		curr_movie = database.get_review_by_id(i)
-    		full_review = curr_movie.full_review
-    		review_words = review_parser.parse_review(full_review)
+    for i in range(1, num_movies+1):
+        parsed_review = fetch_items_from_review(i)
+        items.append(items)
 
-    		items.append(review_words)
 
-    	except Exception as e:
-    		print 'Error parsing review:'
-    		print e
+def fetch_items_from_review(review_id=1):
+    ''' Use review_parser to pull out lists of words (including duplicates) used in reviews
+        for the purpose of mining FPs
+    '''
+    review_words = None
+    database = DatabaseServices(DATABASE_NAME)
 
-    return items
+    try:
+        curr_movie = database.get_review_by_id(review_id)
+        print "Parsing review for title '%s'" % (curr_movie.display_title)
+        full_review = curr_movie.full_review
+
+        if full_review is not None:
+            review_words = review_parser.parse_review(full_review)
+
+    except Exception as e:
+        print 'Error parsing review:'
+        print e
+
+    return review_words
 
 if __name__ == '__main__':
-    fetch_full_articles()
+    print start_box_office_crawl()
