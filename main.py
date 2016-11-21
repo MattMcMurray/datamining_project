@@ -5,8 +5,6 @@ import errno
 import time
 import re
 
-import traceback
-
 from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
 from core.web_scraping import box_office_scraper as box_office
