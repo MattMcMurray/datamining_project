@@ -25,7 +25,10 @@ def remove_nytimes_review_header(text):
 	regex = r"\A(\n{2})((.+\n{1,2})*\n)"						# Regex matching NY Times review header
 	match = re.match(regex, text)
 
-	return text[match.end():]
+	if match is None:
+		return text
+	else:
+		return text[match.end():]
 
 
 def remove_nytimes_review_footer(text):
