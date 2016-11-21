@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 import json
 import os
 import errno
 import time
 import re
+
+import traceback
 
 from settings import DATABASE_NAME, JSON_OUTPUT_DIRNAME, JSON_FILENAME_PREFIX
 from core.web_scraping import movie_api_services as api
@@ -232,15 +235,16 @@ def generate_zeroes(offset, million=False, billion=False):
     return zero_str
 
 
-def fetch_all_review_items():
+def parse_all_reviews():
     database = DatabaseServices(DATABASE_NAME)
     num_movies = database.get_num_movies()
 
-    items = []
-
     for i in range(1, num_movies+1):
         parsed_review = fetch_items_from_review(i)
-        items.append(items)
+        
+        if parsed_review is not None:
+            item_csv = ",".join(parsed_review)
+            database.add_item_csv(i, item_csv)
 
 
 def fetch_items_from_review(review_id=1):
@@ -252,7 +256,7 @@ def fetch_items_from_review(review_id=1):
 
     try:
         curr_movie = database.get_review_by_id(review_id)
-        print "Parsing review for title '%s'" % (curr_movie.display_title)
+        print "Parsing review for title '%s'" % (repr(curr_movie.display_title))
         full_review = curr_movie.full_review
 
         if full_review is not None:

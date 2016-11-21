@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 
 def parse_review(full_review):
@@ -7,11 +8,11 @@ def parse_review(full_review):
 
 	@full_review: The string containing the full review text.
 	'''
-	review_body = remove_nytimes_review_header(full_review)		# Remove NYTimes review header
+	review_body = remove_nytimes_review_header(full_review)				# Remove NYTimes review header
 	review_body = remove_nytimes_review_footer(review_body)
 	review_body = remove_punctuation(review_body)
 	review_body = review_body.lower()
-	text_itemset = review_body.split() 							# Split the review on spaces into tokens
+	text_itemset = review_body.split() 									# Split the review on spaces into tokens
 
 	return text_itemset
 
@@ -22,7 +23,7 @@ def remove_nytimes_review_header(text):
 
 	@text: The text content of the review.
 	'''
-	regex = r"\A(\n{2})((.+\n{1,2})*\n)"						# Regex matching NY Times review header
+	regex = r"\A(\n{2})((.+\n{1,2})*\n)"								# Regex matching NY Times review header
 	match = re.match(regex, text)
 
 	if match is None:

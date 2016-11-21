@@ -108,3 +108,13 @@ class DatabaseServices(object):
         movie = self.get_review_by_id(movie_id)
         movie.box_office_earnings = box_office_gross
         self.session.commit()
+
+    def add_item_csv(self, movie_id, item_csv):
+        ''' Adds a csv containing the review words to the DB '''
+        if self.session is None:
+            self.get_session()
+
+        movie = self.get_review_by_id(movie_id)
+        movie.itemset = item_csv
+        self.session.commit()
+        
