@@ -17,3 +17,4 @@ class Movie(Base):
     link_type = Column(String)
     box_office_earnings = Column(String)
     full_review = Column(String)
+    itemset = Column(String)
