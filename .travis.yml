@@ -4,4 +4,4 @@ python:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 ## need to add test script
-script: pytest tests/ && pylint --errors-only core/
+script: pytest tests/ && pylint core/
