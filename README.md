@@ -74,6 +74,16 @@ import main
 main.start_box_office_crawl()
 ```
 
+## To parse reviews into CSVs
+1. `cd` into main project directory
+2. Ensure you've activated your virtualenv (see [Getting Started](#Getting-Started))
+3. Activate the python interactive shell by running the `python` command
+4. Run the following commands:
+```
+import main
+main.parse_all_reviews()
+```
+
 ## To Browse/Inspect the Database
 - I've decided to use SQLite because it's more than enough for our needs and the flat file can be stored in the repo
 - There is an incomplete version of the DB in the repo right now
