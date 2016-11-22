@@ -235,14 +235,15 @@ def generate_zeroes(offset, million=False, billion=False):
 
 def parse_all_reviews():
     database = DatabaseServices(DATABASE_NAME)
-    num_movies = database.get_num_movies()
+    movies = database.get_all_movie_ids()
 
-    for i in range(1, num_movies+1):
-        parsed_review = fetch_items_from_review(i)
+    for movie in movies:
+        movie_id = movie.movie_id
+        parsed_review = fetch_items_from_review(movie_id)
         
         if parsed_review is not None:
             item_csv = ",".join(parsed_review)
-            database.add_item_csv(i, item_csv)
+            database.add_item_csv(movie_id, item_csv)
 
 
 def fetch_items_from_review(review_id=1):

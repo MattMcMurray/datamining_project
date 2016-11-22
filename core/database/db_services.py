@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, load_only
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func, update
 
@@ -90,6 +90,13 @@ class DatabaseServices(object):
             self.get_session()
 
         return self.session.query(func.count(Movie.movie_id)).scalar()
+
+    def get_all_movie_ids(self):
+        """ Fetches all movie_ids from the DB """
+        if self.session is None:
+            self.get_session()
+
+        return self.session.query(Movie).options(load_only("movie_id"))
 
     def add_review_full_text(self, movie_id, full_text):
         ''' Updates the DB entry with the full review text '''
