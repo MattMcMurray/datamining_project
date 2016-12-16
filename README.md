@@ -1,5 +1,14 @@
 # DATAMINING PROJECT [![Build Status](https://travis-ci.org/MattMcMurray/datamining_project.svg?branch=develop)](https://travis-ci.org/MattMcMurray/datamining_project)
 
+## Viewing Results of Data Mining
+*Note: We attempted to export the data from RapidMiner, but it is a Java program and kept locking up our systems by chewing up all the available memory when attepting to export*
+1. Download [RapidMiner](https://rapidminer.com/)
+2. Open the file `RapidMiner/datamining_process.rmp` as a RapidMiner project
+3. Double click 'Local Repository' on the left hand side navigation
+4. Double click 'movie_association_rules' -- wait a few moments, and you should be brought to the details page
+5. If for some reason the association rules are not present, you may need to run the mining process again
+6. If this is the case, follow [this link](http://community.rapidminer.com/t5/RapidMiner-Studio/Using-SQLite-DB-with-RM/td-p/13456) to set up RapidMiner for use with the sqlite db and then you can run the process again
+
 ## Getting Started
 1. Ensure you've got python (2.7) and python-pip installed
   - e.g., on ubuntu/debian: `sudo apt-get install -y python python-pip`
